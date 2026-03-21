@@ -17,6 +17,9 @@ public class Members {
     byte[] residentNumber;
 
     @Column
+    String phone;
+
+    @Column
     MemberStatus status;
 
     @Column

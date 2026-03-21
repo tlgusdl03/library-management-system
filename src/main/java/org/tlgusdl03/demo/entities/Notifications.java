@@ -3,19 +3,22 @@ package org.tlgusdl03.demo.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "books")
-public class Books {
+@Table(name = "notifications")
+public class Notifications {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     Long id;
 
     @Column
-    String isbn;
+    NotificationsType type;
 
     @Column
-    String title;
+    Long targetId;
 
     @Column
-    String author;
+    String content;
+
+    @Column
+    Long memberId;
 }
