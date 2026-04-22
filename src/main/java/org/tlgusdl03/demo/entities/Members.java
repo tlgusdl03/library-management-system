@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.tlgusdl03.demo.dto.MemberUpdateRequest;
 
 @Entity
 @Table(name = "members")
@@ -38,4 +39,12 @@ public class Members {
 
     @Column
     String password;
+
+    public void updateProfile(String name, byte[] residentNumber, String phone, String userName, String password) {
+        this.name = name;
+        this.residentNumber = residentNumber;
+        this.phone = phone;
+        this.userName = userName;
+        this.password = password;
+    }
 }
