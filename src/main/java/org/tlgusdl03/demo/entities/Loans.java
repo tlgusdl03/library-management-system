@@ -19,6 +19,7 @@ public class Loans {
     Instant returnDate;
 
     @Column
+    @Enumerated(EnumType.STRING)
     LoanStatus loanStatus;
 
     @Column

@@ -11,6 +11,7 @@ public class BookCopies {
     Long id;
 
     @Column
+    @Enumerated(EnumType.STRING)
     BookStatus status;
 
     @Column
