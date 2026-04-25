@@ -1,7 +1,9 @@
 package org.tlgusdl03.demo.dto;
 
+import lombok.Data;
 import org.tlgusdl03.demo.entities.Members;
 
+@Data
 public class MemberJoinRequest {
     private String name;
     private byte[] residentNumber;

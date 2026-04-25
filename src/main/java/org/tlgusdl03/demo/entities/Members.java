@@ -29,10 +29,13 @@ public class Members {
     String phone;
 
     @Column
-    MemberStatus status;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    MemberStatus status = MemberStatus.normal;
 
     @Column
-    Long overdueDate;
+    @Builder.Default
+    Long overdueDate = 0L;
 
     @Column
     String userName;
@@ -46,5 +49,9 @@ public class Members {
         this.phone = phone;
         this.userName = userName;
         this.password = password;
+    }
+
+    public void withdraw(){
+        this.status = MemberStatus.withdrawn;
     }
 }

@@ -11,6 +11,7 @@ public class Notifications {
     Long id;
 
     @Column
+    @Enumerated(EnumType.STRING)
     NotificationsType type;
 
     @Column
