@@ -1,8 +1,12 @@
 package org.tlgusdl03.demo.entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 
 @Entity
+@Builder
+@Getter
 @Table(name = "books")
 public class Books {
     @Id
