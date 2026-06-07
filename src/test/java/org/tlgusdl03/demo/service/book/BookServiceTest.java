@@ -28,9 +28,9 @@ public class BookServiceTest {
     void registerBookTest() {
         BookRegisterRequest bookRegisterRequest = new BookRegisterRequest();
 
-        bookRegisterRequest.setAuthor("작가1");
         bookRegisterRequest.setIsbn("test01");
         bookRegisterRequest.setTitle("제목1");
+        bookRegisterRequest.setAuthor("작가1");
 
         Long savedId = bookService.registerBook(bookRegisterRequest);
         BookResponse bookResponse = bookService.searchById(savedId);

@@ -14,7 +14,7 @@ public class BookRegisterRequest {
 
     public Books toEntity() {
         return Books.builder()
-                .author(this.title)
+                .author(this.author)
                 .isbn(this.isbn)
                 .title(this.title)
                 .build();
