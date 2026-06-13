@@ -18,4 +18,8 @@ public class BookCopies {
 
     @Column
     Long bookId;
+
+    public void changeStatus(BookStatus status) {
+        this.status = status;
+    }
 }
