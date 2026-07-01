@@ -2,6 +2,8 @@ package org.tlgusdl03.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.tlgusdl03.demo.dto.BookCopiesCreate;
+import org.tlgusdl03.demo.dto.BookInfoCreate;
 import org.tlgusdl03.demo.dto.BookRegisterRequest;
 import org.tlgusdl03.demo.dto.BookResponse;
 import org.tlgusdl03.demo.entities.BookCopies;
@@ -19,10 +21,47 @@ public class BookServiceImpl implements BookService{
     private final BookCopiesRepository bookCopiesRepository;
 
     @Override
-    public Long registerBook(BookRegisterRequest dto) {
-        Books books = dto.toEntity();
-        booksRepository.save(books);
-        return books.getId();
+    // 등록하려는 도서 정보가 이미 있는지 확인
+    // 있다면 도서보유 테이블에만 추가
+    // 없다면 도서 정보 및 도서보유 정보 추가
+    public void registerBook(BookRegisterRequest dto) {
+        boolean isBookExists = booksRepository.existsByIsbn(dto.getIsbn());
+
+        if(!isBookExists){
+            BookInfoCreate bookInfoCreate = BookInfoCreate.builder()
+                    .isbn(dto.getIsbn())
+                    .title(dto.getTitle())
+                    .author(dto.getAuthor())
+                    .build();
+
+            registerBookInfo(bookInfoCreate);
+        }
+
+        BookCopiesCreate bookCopiesCreate = BookCopiesCreate.builder()
+                .isbn(dto.getIsbn())
+                .status(dto.getStatus())
+                .build();
+
+        registerBookCopies(bookCopiesCreate);
+    }
+
+    private void registerBookInfo(BookInfoCreate bookInfoCreate){
+        Books book = Books.builder()
+                .isbn(bookInfoCreate.getIsbn())
+                .title(bookInfoCreate.getTitle())
+                .author(bookInfoCreate.getAuthor())
+                .build();
+
+        booksRepository.save(book);
+    }
+
+    private void registerBookCopies(BookCopiesCreate bookCopiesCreate){
+        BookCopies bookCopies = BookCopies.builder()
+                .isbn(bookCopiesCreate.getIsbn())
+                .status(bookCopiesCreate.getStatus())
+                .build();
+
+        bookCopiesRepository.save(bookCopies);
     }
 
     @Override

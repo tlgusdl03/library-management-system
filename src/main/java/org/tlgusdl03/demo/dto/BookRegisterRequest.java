@@ -1,22 +1,19 @@
 package org.tlgusdl03.demo.dto;
 
 import jakarta.persistence.Column;
+import lombok.Builder;
 import lombok.Data;
+import org.tlgusdl03.demo.entities.BookStatus;
 import org.tlgusdl03.demo.entities.Books;
 
+@Builder
 @Data
 public class BookRegisterRequest {
-    String isbn;
+    private String isbn;
 
-    String title;
+    private String title;
 
-    String author;
+    private String author;
 
-    public Books toEntity() {
-        return Books.builder()
-                .author(this.author)
-                .isbn(this.isbn)
-                .title(this.title)
-                .build();
-    }
+    private BookStatus status;
 }

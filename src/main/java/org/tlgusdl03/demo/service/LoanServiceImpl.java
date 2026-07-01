@@ -1,6 +1,5 @@
 package org.tlgusdl03.demo.service;
 
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,11 +21,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LoanServiceImpl implements LoanService{
-    private final BooksRepository booksRepository;
     private final BookCopiesRepository bookCopiesRepository;
-    private final MembersRepository membersRepository;
     private final LoansRepository loansRepository;
-    private final BookService bookService;
 
     // BooksId를 받고
     // Copies 중 하나를 선택해서 빌려줌
