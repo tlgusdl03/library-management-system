@@ -28,37 +28,26 @@ public class BookServiceImpl implements BookService{
         boolean isBookExists = booksRepository.existsByIsbn(dto.getIsbn());
 
         if(!isBookExists){
-            BookInfoCreate bookInfoCreate = BookInfoCreate.builder()
-                    .isbn(dto.getIsbn())
-                    .title(dto.getTitle())
-                    .author(dto.getAuthor())
-                    .build();
-
-            registerBookInfo(bookInfoCreate);
+            registerBookInfo(dto);
         }
 
-        BookCopiesCreate bookCopiesCreate = BookCopiesCreate.builder()
-                .isbn(dto.getIsbn())
-                .status(dto.getStatus())
-                .build();
-
-        registerBookCopies(bookCopiesCreate);
+        registerBookCopies(dto);
     }
 
-    private void registerBookInfo(BookInfoCreate bookInfoCreate){
+    private void registerBookInfo(BookRegisterRequest dto){
         Books book = Books.builder()
-                .isbn(bookInfoCreate.getIsbn())
-                .title(bookInfoCreate.getTitle())
-                .author(bookInfoCreate.getAuthor())
+                .isbn(dto.getIsbn())
+                .title(dto.getTitle())
+                .author(dto.getAuthor())
                 .build();
 
         booksRepository.save(book);
     }
 
-    private void registerBookCopies(BookCopiesCreate bookCopiesCreate){
+    private void registerBookCopies(BookRegisterRequest dto){
         BookCopies bookCopies = BookCopies.builder()
-                .isbn(bookCopiesCreate.getIsbn())
-                .status(bookCopiesCreate.getStatus())
+                .isbn(dto.getIsbn())
+                .status(dto.getStatus())
                 .build();
 
         bookCopiesRepository.save(bookCopies);
@@ -69,7 +58,7 @@ public class BookServiceImpl implements BookService{
     public BookResponse searchById(Long id) {
         Books books = booksRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Books not found"));
         // id -> bookId로 하여 book_copies에 모든 책 복사본들을 검색
-        List<BookCopies> bookCopies = bookCopiesRepository.findAllByBookId(id);
+        List<BookCopies> bookCopies = bookCopiesRepository.findAllByIsbn(books.getIsbn());
 
         boolean isAvailable = bookCopies.stream().anyMatch((copy -> copy.getStatus().equals(BookStatus.available)));
 
@@ -85,7 +74,7 @@ public class BookServiceImpl implements BookService{
     public BookResponse searchByIsbn(String isbn) {
         Books books = booksRepository.findByIsbn(isbn).orElseThrow(() -> new IllegalArgumentException("Books not found"));
 
-        List<BookCopies> bookCopies = bookCopiesRepository.findAllByBookId(books.getId());
+        List<BookCopies> bookCopies = bookCopiesRepository.findAllByIsbn(isbn);
 
         boolean isAvailable = bookCopies.stream().anyMatch(copy -> copy.getStatus().equals(BookStatus.available));
 
@@ -101,7 +90,7 @@ public class BookServiceImpl implements BookService{
     public BookResponse searchByTitle(String title) {
         Books books = booksRepository.findByTitle(title).orElseThrow(() -> new IllegalArgumentException("Books not found"));
 
-        List<BookCopies> bookCopies = bookCopiesRepository.findAllByBookId(books.getId());
+        List<BookCopies> bookCopies = bookCopiesRepository.findAllByIsbn(books.getIsbn());
 
         boolean isAvailable = bookCopies.stream().anyMatch(copy -> copy.getStatus().equals(BookStatus.available));
 
@@ -122,7 +111,7 @@ public class BookServiceImpl implements BookService{
         }
 
         return books.stream().map(book -> {
-                    List<BookCopies> bookCopies = bookCopiesRepository.findAllByBookId(book.getId());
+                    List<BookCopies> bookCopies = bookCopiesRepository.findAllByIsbn(book.getIsbn());
 
                     boolean isAvailable = bookCopies.stream().anyMatch(copy -> copy.getStatus().equals(BookStatus.available));
 

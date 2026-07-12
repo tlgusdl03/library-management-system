@@ -5,10 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tlgusdl03.demo.dto.BookLoanRequest;
-import org.tlgusdl03.demo.entities.BookCopies;
-import org.tlgusdl03.demo.entities.BookStatus;
-import org.tlgusdl03.demo.entities.LoanStatus;
-import org.tlgusdl03.demo.entities.Loans;
+import org.tlgusdl03.demo.entities.*;
 import org.tlgusdl03.demo.repository.BookCopiesRepository;
 import org.tlgusdl03.demo.repository.BooksRepository;
 import org.tlgusdl03.demo.repository.LoansRepository;
@@ -21,6 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LoanServiceImpl implements LoanService{
+    private final BooksRepository booksRepository;
     private final BookCopiesRepository bookCopiesRepository;
     private final LoansRepository loansRepository;
 
@@ -32,7 +30,10 @@ public class LoanServiceImpl implements LoanService{
         Long bookId = bookLoanRequest.getBookId();
         Long memberId = bookLoanRequest.getMemberId();
 
-        BookCopies availableCopy = bookCopiesRepository.findFirstByBookIdAndStatus(bookId, BookStatus.available).orElseThrow(() -> new RuntimeException("Book Not Available"));
+        Books books = booksRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book Not Available, cause by wrong BookId"));
+        String bookIsbn = books.getIsbn();
+
+        BookCopies availableCopy = bookCopiesRepository.findFirstByIsbnAndStatus(bookIsbn, BookStatus.available).orElseThrow(() -> new RuntimeException("Book Not Available"));
         availableCopy.changeStatus(BookStatus.loaned);
 
         Loans loan = Loans.builder()
@@ -65,20 +66,20 @@ public class LoanServiceImpl implements LoanService{
         loan.extendLoan();
     }
 
-    @Override
-    @Transactional
-    @Scheduled(cron = "0 0 1 * * *")
-    public void applyPenalty() {
-        Instant now = Instant.now();
-
-        List<Loans> overdueLoans = loansRepository.findAllByLoanStatusAndReturnDateBefore(LoanStatus.loaned, now);
-
-        if (overdueLoans.isEmpty()) {
-            return;
-        }
-
-        for (Loans loan : overdueLoans) {
-            loan.changeLoanStatus(LoanStatus.overdue);
-        }
-    }
+//    @Override
+//    @Transactional
+//    @Scheduled(cron = "0 0 1 * * *")
+//    public void applyPenalty() {
+//        Instant now = Instant.now();
+//
+//        List<Loans> overdueLoans = loansRepository.findAllByLoanStatusAndReturnDateBefore(LoanStatus.loaned, now);
+//
+//        if (overdueLoans.isEmpty()) {
+//            return;
+//        }
+//
+//        for (Loans loan : overdueLoans) {
+//            loan.changeLoanStatus(LoanStatus.overdue);
+//        }
+//    }
 }

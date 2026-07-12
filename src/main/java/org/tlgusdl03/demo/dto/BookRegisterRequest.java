@@ -9,11 +9,11 @@ import org.tlgusdl03.demo.entities.Books;
 @Builder
 @Data
 public class BookRegisterRequest {
-    private String isbn;
+    String isbn;
 
-    private String title;
+    String title;
 
-    private String author;
+    String author;
 
-    private BookStatus status;
+    BookStatus status;
 }

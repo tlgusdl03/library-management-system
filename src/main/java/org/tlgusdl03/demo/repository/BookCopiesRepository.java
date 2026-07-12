@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookCopiesRepository extends JpaRepository<BookCopies, Long> {
-    List<BookCopies> findAllByBookId(Long bookId);
-    Optional<BookCopies> findFirstByBookIdAndStatus(Long bookId, BookStatus status);
+    List<BookCopies> findAllByIsbn(String isbn);
+
+    Optional<BookCopies> findFirstByIsbnAndStatus(String isbn, BookStatus status);
 }

@@ -9,6 +9,6 @@ public interface LoanService {
     void returnBook(Long loanId);
     // 연장
     void extendLoan(Long loanId);
-    // 제재
-    void applyPenalty();
+//    // 제재
+//    void applyPenalty();
 }
