@@ -92,7 +92,50 @@ public class LoanServiceTest {
                 .hasMessageContaining("Book Not Available");
     }
 
-//    @DisplayName("도서 반납 기능을 테스트 합니다.")
+    @Test
+    @DisplayName("도서 반납 기능을 테스트 합니다.")
+    void returnBookTest() {
+        // 멤버 1명 추가
+        MemberJoinRequest memberJoinRequest = MemberJoinRequest.builder()
+                .name("member01")
+                .phone("010-1234-5678")
+                .password("123456")
+                .residentNumber("123456-1234567".getBytes())
+                .userName("member01")
+                .build();
+
+        Long memberId = memberService.join(memberJoinRequest);
+
+        // 책 정보 1개와 책 보유 정보 1개 추가
+        BookRegisterRequest dto = BookRegisterRequest.builder()
+                .isbn("isbn01")
+                .title("title01")
+                .author("author01")
+                .status(BookStatus.available)
+                .build();
+
+        bookService.registerBook(dto);
+
+        Books book = booksRepository.findByIsbn("isbn01").orElseThrow(() -> new IllegalArgumentException("Book not found"));
+        Long bookId = book.getId();
+
+        BookLoanRequest bookLoanRequest = BookLoanRequest.builder()
+                .bookId(bookId)
+                .memberId(memberId)
+                .build();
+        // 1번째 대출 시도 성공해야 함
+        Long loanId = loanService.loanBook(bookLoanRequest);
+
+        // 2번째 대출 시도 실패해야 함
+        Assertions.assertThatThrownBy(() -> loanService.loanBook(bookLoanRequest))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Book Not Available");
+
+        // 반납 후 세번째 대출 시도 성공해야 함
+        loanService.returnBook(loanId);
+
+        loanService.loanBook(bookLoanRequest);
+    }
 //
 //    @DisplayName("도서 대출 연장 기능을 테스트 합니다.")
 //
