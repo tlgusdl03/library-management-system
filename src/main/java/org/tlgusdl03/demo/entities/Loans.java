@@ -54,7 +54,7 @@ public class Loans {
         if (expansion >= 1) {
             throw new RuntimeException("already has expansion");
         }
-        this.returnDate.plus(7, ChronoUnit.DAYS);
+        this.returnDate = this.returnDate.plus(7, ChronoUnit.DAYS);
         this.expansion++;
     }
 }
