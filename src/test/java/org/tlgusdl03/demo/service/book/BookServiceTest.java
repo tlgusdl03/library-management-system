@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.tlgusdl03.demo.dto.BookRegisterRequest;
 import org.tlgusdl03.demo.dto.BookResponse;
+import org.tlgusdl03.demo.entities.BookStatus;
 import org.tlgusdl03.demo.repository.BookCopiesRepository;
 import org.tlgusdl03.demo.repository.BooksRepository;
 import org.tlgusdl03.demo.service.BookService;
@@ -27,16 +28,17 @@ public class BookServiceTest {
     BookCopiesRepository bookCopiesRepository;
 
     @Test
-    @DisplayName("책 등록 기능을 테스트 합니다.")
+    @DisplayName("책 등록 기능 / Isbn을 통한 책 검색 기능을 테스트 합니다.")
     void registerBookTest() {
-        BookRegisterRequest bookRegisterRequest = new BookRegisterRequest();
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .title("제목1")
+                .author("작가1")
+                .isbn("test01")
+                .status(BookStatus.available)
+                .build();
 
-        bookRegisterRequest.setIsbn("test01");
-        bookRegisterRequest.setTitle("제목1");
-        bookRegisterRequest.setAuthor("작가1");
-
-        Long savedId = bookService.registerBook(bookRegisterRequest);
-        BookResponse bookResponse = bookService.searchById(savedId);
+        bookService.registerBook(bookRegisterRequest);
+        BookResponse bookResponse = bookService.searchByIsbn("test01");
 
         assertThat(bookResponse).isNotNull();
         assertThat(bookResponse.getIsbn()).isEqualTo("test01");
@@ -46,38 +48,17 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Isbn을 통한 책 검색 기능을 테스트 합니다.")
-    void searchBookByIsbnTest() {
-        BookRegisterRequest bookRegisterRequest = new BookRegisterRequest();
-        
-        bookRegisterRequest.setIsbn("test01");
-        bookRegisterRequest.setTitle("제목1");
-        bookRegisterRequest.setAuthor("작가1");
-
-        Long savedId =  bookService.registerBook(bookRegisterRequest);
-        BookResponse bookResponse1 = bookService.searchById(savedId);
-        BookResponse bookResponse2 = bookService.searchByIsbn("test01");
-
-        assertThat(bookResponse1.getIsbn()).isEqualTo("test01");
-        assertThat(bookResponse2.getIsbn()).isEqualTo("test01");
-        assertThat(bookResponse1.getTitle()).isEqualTo("제목1");
-        assertThat(bookResponse2.getTitle()).isEqualTo("제목1");
-        assertThat(bookResponse1.getAuthor()).isEqualTo("작가1");
-        assertThat(bookResponse2.getAuthor()).isEqualTo("작가1");
-
-    }
-
-    @Test
     @DisplayName("Title을 통한 책 검색 기능을 테스트 합니다.")
     void searchBookByTitleTest() {
-        BookRegisterRequest bookRegisterRequest = new BookRegisterRequest();
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .title("제목1")
+                .author("작가1")
+                .isbn("test01")
+                .status(BookStatus.available)
+                .build();
 
-        bookRegisterRequest.setIsbn("test01");
-        bookRegisterRequest.setTitle("제목1");
-        bookRegisterRequest.setAuthor("작가1");
-
-        Long savedId =  bookService.registerBook(bookRegisterRequest);
-        BookResponse bookResponse1 = bookService.searchById(savedId);
+        bookService.registerBook(bookRegisterRequest);
+        BookResponse bookResponse1 = bookService.searchByIsbn("test01");
         BookResponse bookResponse2 = bookService.searchByTitle("제목1");
 
         assertThat(bookResponse1.getIsbn()).isEqualTo("test01");
@@ -92,16 +73,22 @@ public class BookServiceTest {
     @Test
     @DisplayName("Author를 통한 책 검색 기능을 테스트 합니다.")
     void searchBookByAuthorTest() {
-        BookRegisterRequest bookRegisterRequest = new BookRegisterRequest();
-        bookRegisterRequest.setIsbn("test01");
-        bookRegisterRequest.setTitle("제목1");
-        bookRegisterRequest.setAuthor("작가1");
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .title("제목1")
+                .author("작가1")
+                .isbn("test01")
+                .status(BookStatus.available)
+                .build();
+
         bookService.registerBook(bookRegisterRequest);
 
-        BookRegisterRequest bookRegisterRequest2 = new BookRegisterRequest();
-        bookRegisterRequest2.setIsbn("test02");
-        bookRegisterRequest2.setTitle("제목2");
-        bookRegisterRequest2.setAuthor("작가1");
+        BookRegisterRequest bookRegisterRequest2 = BookRegisterRequest.builder()
+                .title("제목2")
+                .author("작가2")
+                .isbn("test02")
+                .status(BookStatus.available)
+                .build();
+
         bookService.registerBook(bookRegisterRequest2);
 
         List<BookResponse> bookResponseList = bookService.searchByAuthor("작가1");

@@ -1,9 +1,15 @@
 package org.tlgusdl03.demo.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.tlgusdl03.demo.entities.Members;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MemberJoinRequest {
     private String name;
     private byte[] residentNumber;

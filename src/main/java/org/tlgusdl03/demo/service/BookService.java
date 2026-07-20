@@ -10,7 +10,7 @@ import java.util.List;
     관련된 하나의 dto를 만드는 것이 좋을 것 같음
  */
 public interface BookService {
-    Long registerBook(BookRegisterRequest request);
+    void registerBook(BookRegisterRequest request);
     BookResponse searchById(Long bookId);
     BookResponse searchByIsbn(String isbn);
     BookResponse searchByTitle(String title);
